@@ -1,9 +1,10 @@
 <script>
-	export let greet;
+	export let wsmModule;
+	console.log(wsmModule.greet())
 </script>
 
 <main>
-	<h1>{greet}!</h1>
+	<h1>test!</h1>
 	<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
 </main>
 
