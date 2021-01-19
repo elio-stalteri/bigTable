@@ -1,47 +1,54 @@
 <script>
   export let bigTable;
-  const tableData = Array.apply(null, {
+  bigTable.setData(Array.apply(null, {
     length: Math.floor(Math.random() * 1000 + 200)
   }).map(() =>
-    Array.apply(null, { length: 20}).map(
-      () => Math.floor(Math.random()*100) + "%"
+    Array.apply(null, { length: 20 }).map(
+      () => Math.floor(Math.random() * 100000) + "%"
     )
-  );
-  bigTable.setData(tableData);
-  console.log("getData", bigTable.getData());
-  console.log("getRows", bigTable.getRows());
-  let example = bigTable.send_example_to_js();
-  console.log("send_example_to_js", example);
-  bigTable.receive_example_from_js(example);
+  ));
+  // console.log("getData", bigTable.getData());
+  // console.log("getRows", bigTable.getRows());
+  // let example = bigTable.send_example_to_js();
+  // console.log("send_example_to_js", example);
+  // bigTable.receive_example_from_js(example);
+
+  let rows = bigTable.getRows();
 </script>
 
 <style>
-  main {
-    text-align: center;
-    padding: 1em;
-    max-width: 240px;
-    margin: 0 auto;
+  .wrapper {
+    width: 100%;
+    height: 50%;
+    margin-top: 20%;
+		overflow-y: hidden;
+    overflow-x: hidden;
+		padding:5px;
+		/* border:1px solid red; */
   }
+  .table {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(20, minmax(80px, 1fr));
+    /* gap: 10px; */
+    overflow-y: scroll;
+		overflow-x: scroll;
+		/* border:1px solid teal */
+		border:1px solid rgba(0, 0, 0, 0.534);
 
-  h1 {
-    color: #ff3e00;
-    text-transform: uppercase;
-    font-size: 4em;
-    font-weight: 100;
   }
-
-  @media (min-width: 640px) {
-    main {
-      max-width: none;
-    }
-  }
+	.table > :global(div){
+		border-left:1px solid rgba(0, 0, 0, 0.534);
+		border-top:1px solid rgba(0, 0, 0, 0.534);
+		padding: 5px;
+	}
 </style>
 
-<main>
-  <h1>test!</h1>
-  <p>
-    Visit the
-    <a href="https://svelte.dev/tutorial">Svelte tutorial</a>
-    to learn how to build Svelte apps.
-  </p>
-</main>
+<div class="wrapper">
+  <div class="table">
+    {#each rows as row}
+      {@html row}
+    {/each}
+  </div>
+</div>
