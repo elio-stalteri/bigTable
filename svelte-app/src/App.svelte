@@ -1,12 +1,17 @@
 <script>
+  import { onMount } from "svelte";
+  import Row, { setData } from "./Row.svelte";
   export let bigTable;
-  bigTable.setData(Array.apply(null, {
-    length: Math.floor(Math.random() * 1000 + 200)
-  }).map(() =>
-    Array.apply(null, { length: 20 }).map(
-      () => Math.floor(Math.random() * 100000) + "%"
-    )
-  ));
+  bigTable.setData(
+    Array.apply(null, {
+      length: Math.floor(Math.random() * 1000 + 200)
+    }).map(() =>
+      Array.apply(null, { length: 20 }).map(
+        () => Math.floor(Math.random() * 100000) + "%"
+      )
+    ),
+    setData
+  );
   // console.log("getData", bigTable.getData());
   // console.log("getRows", bigTable.getRows());
   // let example = bigTable.send_example_to_js();
@@ -14,17 +19,21 @@
   // bigTable.receive_example_from_js(example);
 
   let rows = bigTable.getRows();
+  onMount(() => {
+    bigTable.reRender();
+  });
 </script>
 
 <style>
   .wrapper {
-    width: 100%;
+    width: 80%;
+    margin: auto;
     height: 50%;
     margin-top: 20%;
-		overflow-y: hidden;
+    overflow-y: hidden;
     overflow-x: hidden;
-		padding:5px;
-		/* border:1px solid red; */
+    padding: 5px;
+    /* border:1px solid red; */
   }
   .table {
     width: 100%;
@@ -33,22 +42,21 @@
     grid-template-columns: repeat(20, minmax(80px, 1fr));
     /* gap: 10px; */
     overflow-y: scroll;
-		overflow-x: scroll;
-		/* border:1px solid teal */
-		border:1px solid rgba(0, 0, 0, 0.534);
-
+    overflow-x: scroll;
+    /* border:1px solid teal */
+    border: 1px solid rgba(0, 0, 0, 0.534);
   }
-	.table > :global(div){
-		border-left:1px solid rgba(0, 0, 0, 0.534);
-		border-top:1px solid rgba(0, 0, 0, 0.534);
-		padding: 5px;
-	}
+  .table > :global(div) {
+    border-left: 1px solid rgba(0, 0, 0, 0.534);
+    border-top: 1px solid rgba(0, 0, 0, 0.534);
+    padding: 5px;
+  }
 </style>
 
 <div class="wrapper">
   <div class="table">
-    {#each rows as row}
-      {@html row}
+    {#each rows as row, i}
+      <Row id={`${i}`} />
     {/each}
   </div>
 </div>

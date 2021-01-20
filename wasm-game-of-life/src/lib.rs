@@ -1,5 +1,6 @@
 mod utils;
 
+use js_sys::{Function, Object, Reflect, WebAssembly};
 use wasm_bindgen::prelude::*;
 
 // #[wasm_bindgen(start)]
@@ -45,12 +46,19 @@ macro_rules! console_log {
 
 use serde::{Serialize, Deserialize};
 
+
+
+use std::collections::HashMap;
+use std::sync::Mutex;
+
 #[derive(Serialize, Deserialize)]
-pub struct Example {
-    pub field1: Vec<f32>,
-    pub field2: Vec<Vec<f32>>,
-    pub field3: [f32; 4],
+pub struct Row {
+    pub data: Vec<String>,
+    pub row: String,
 }
+
+//static mut TABLE: Mutex<HashMap<String, Row>> = Mutex::new(HashMap::new()); 
+
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
 // allocator.
@@ -60,25 +68,37 @@ static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 static mut tableData: Vec<Vec<String>> = Vec::new();
 static mut tableRows: Vec<String> = Vec::new();
-
+static mut callback: Option<js_sys::Function> = None;
+// f: &js_sys::Function
 #[wasm_bindgen]
-pub fn setData(array: JsValue) {
+pub fn setData(array: JsValue, f: js_sys::Function) {
     unsafe {
         tableData = array.into_serde().unwrap();
-        renderRowsArray();
+        callback = Some(f);
+        // let this = JsValue::null();
+        // let x = JsValue::from(5.);
+        // callback.as_ref().unwrap().call1(&this, &x);
+        renderRowsArray(false);
     }
 }
 
-pub fn renderRowsArray() {
+pub fn renderRowsArray(callCallback: bool) {
     unsafe{
         tableRows = Vec::new();
-        for row in tableData.iter() {
+        for (rowIdx, row) in tableData.iter().enumerate() {
             let mut rowString: String = "".to_string();
-            for cell in row.iter() {
+            for (cellIdx, cell) in row.iter().enumerate() {
                 let resString: String = format!("<div><span>{}</span></div>", cell);
                 rowString.push_str(&resString[..]);
             }
-            tableRows.push(rowString.to_string())
+            if callCallback {
+                // console_log!("rendering data {}",tableData[0][0]);
+                let this = JsValue::null();
+                let x = JsValue::from(rowString.to_string());
+                let y = JsValue::from(rowIdx.to_string());
+                callback.as_ref().unwrap().call2(&this, &y,&x);
+            }
+            tableRows.push("".to_string())
         }
     }
 }
@@ -97,22 +117,9 @@ pub fn getRows()-> JsValue {
     }
 }
 
-#[wasm_bindgen]
-pub fn send_example_to_js() -> JsValue {
-    
-    let example = Example {
-        field1:vec![43.],
-        field2: vec![vec![1., 2.], vec![3., 4.]],
-        field3: [1., 2., 3., 4.]
-    };
-
-    JsValue::from_serde(&example).unwrap()
-}
-
 
 #[wasm_bindgen]
-pub fn receive_example_from_js(val: &JsValue) {
-    let example: Example = val.into_serde().unwrap();
-    console_log!("test example {}",example.field1[0]);
+pub fn reRender() {
+    renderRowsArray(true);
 }
 
