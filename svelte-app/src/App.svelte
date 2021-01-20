@@ -19,9 +19,22 @@
   // bigTable.receive_example_from_js(example);
 
   let rows = bigTable.getRows();
+
+  const cellH = 29
+  const tableH = 388.5
+  const numberVisible = Math.ceil(tableH/cellH)
+  
   onMount(() => {
-    bigTable.reRender();
+    console.log(numberVisible+10)
+    bigTable.reRender([0,numberVisible+10]);
   });
+
+  function tableScroll(e){
+    const TableScrollY = e.target.scrollTop
+    const cellOffset = Math.floor(TableScrollY/cellH)
+    //console.log([cellOffset,cellOffset+numberVisible+10])
+    bigTable.reRender([cellOffset,cellOffset+numberVisible+10]);
+  }
 </script>
 
 <style>
@@ -51,10 +64,15 @@
     border-top: 1px solid rgba(0, 0, 0, 0.534);
     padding: 5px;
   }
+  .table > :global(div.row) {
+    grid-column:20
+  }
+
+  
 </style>
 
 <div class="wrapper">
-  <div class="table">
+  <div class="table" on:scroll={tableScroll}>
     {#each rows as row, i}
       <Row id={`${i}`} />
     {/each}

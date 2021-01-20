@@ -78,12 +78,16 @@ pub fn setData(array: JsValue, f: js_sys::Function) {
         // let this = JsValue::null();
         // let x = JsValue::from(5.);
         // callback.as_ref().unwrap().call1(&this, &x);
-        renderRowsArray(false);
+        renderRowsArray(false,0.,0.);
     }
 }
 
-pub fn renderRowsArray(callCallback: bool) {
+pub fn renderRowsArray(callCallback: bool,start: f64,end:f64) {
     unsafe{
+        // if callCallback {
+        //     console_log!("start {}",start);
+        //     console_log!("end {}",end);
+        // }
         tableRows = Vec::new();
         for (rowIdx, row) in tableData.iter().enumerate() {
             let mut rowString: String = "".to_string();
@@ -91,12 +95,18 @@ pub fn renderRowsArray(callCallback: bool) {
                 let resString: String = format!("<div><span>{}</span></div>", cell);
                 rowString.push_str(&resString[..]);
             }
-            if callCallback {
+            if callCallback  {
                 // console_log!("rendering data {}",tableData[0][0]);
                 let this = JsValue::null();
-                let x = JsValue::from(rowString.to_string());
                 let y = JsValue::from(rowIdx.to_string());
-                callback.as_ref().unwrap().call2(&this, &y,&x);
+                // console_log!("rowIdx {}",rowIdx);
+                if rowIdx >= (start as usize)  && rowIdx <= (end as usize){ 
+                    let x = JsValue::from(rowString.to_string());
+                    callback.as_ref().unwrap().call2(&this, &y,&x);
+                }else{
+                    let x = JsValue::from("<div class=\"row\" />".to_string());
+                    callback.as_ref().unwrap().call2(&this, &y,&x);
+                }
             }
             tableRows.push("".to_string())
         }
@@ -119,7 +129,10 @@ pub fn getRows()-> JsValue {
 
 
 #[wasm_bindgen]
-pub fn reRender() {
-    renderRowsArray(true);
+pub fn reRender(datajs: JsValue) {
+    let data: Vec<f64> = datajs.into_serde().unwrap();
+    // console_log!("startIdx {}",data[0]);
+    // console_log!("endIdx {}",data[1]);
+    renderRowsArray(true,data[0],data[1]);
 }
 

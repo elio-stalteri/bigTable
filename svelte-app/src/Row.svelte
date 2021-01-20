@@ -10,8 +10,8 @@
   export let id;
   let row = "";
   onMount(()=>{
-    // console.log(id)
     data[id] = content => {
+      console.log(id)
       row = content;
     };
   })
