@@ -104,11 +104,11 @@ pub fn renderRowsArray(callCallback: bool,start: f64,end:f64) {
                     let x = JsValue::from(rowString.to_string());
                     callback.as_ref().unwrap().call2(&this, &y,&x);
                 }else{
-                    let x = JsValue::from("<div class=\"row\" />".to_string());
+                    let x = JsValue::from(format!("<div class=\"row\" >loading... {}</div>",rowIdx).to_string());
                     callback.as_ref().unwrap().call2(&this, &y,&x);
                 }
             }
-            tableRows.push("".to_string())
+            tableRows.push(rowString)
         }
     }
 }
@@ -124,6 +124,23 @@ pub fn getData()-> JsValue {
 pub fn getRows()-> JsValue {
     unsafe {
        return JsValue::from_serde(&tableRows).unwrap()
+    }
+}
+
+#[wasm_bindgen]
+pub fn getNumberRows()-> JsValue {
+    unsafe {
+       return JsValue::from_serde(&tableRows.len()).unwrap()
+    }
+}
+
+#[wasm_bindgen]
+pub fn getRowsSlice(datajs: JsValue)-> JsValue {
+    unsafe {
+        let data: Vec<f64> = datajs.into_serde().unwrap();
+        let start = data[0] as usize;
+        let end = data[1] as usize;
+        return JsValue::from_serde(&tableRows[start..=end]).unwrap()
     }
 }
 
