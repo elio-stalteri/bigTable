@@ -11,10 +11,11 @@
   let row = "";
   onMount(()=>{
     data[id] = content => {
-      console.log(id)
+      // console.log(id)
       row = content;
     };
   })
 </script>
 
+<span></span>
 {@html row}
