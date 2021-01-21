@@ -1,5 +1,5 @@
 import App from './App.svelte';
-import wasm from '../../wasm-game-of-life/Cargo.toml';
+import wasm from '../../bigTable/Cargo.toml';
 
 const init = async () => {
     const bigTable = await wasm();

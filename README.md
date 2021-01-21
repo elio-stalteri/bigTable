@@ -22,7 +22,7 @@ Project structure:
 ```
 svelte-wasm
 ├── svelte-app
-└── wasm-game-of-life
+└── bigTable
 ```
 
 ## Setup wasm
@@ -51,7 +51,7 @@ svelte-wasm
    ```
 3. Access your wasm `greet()` function in your Svelte js code.
    ```rust
-     //wasm-game-of-life/src/lib.rs
+     //bigTable/src/lib.rs
      mod utils;
 
     use wasm_bindgen::prelude::*;
@@ -64,7 +64,7 @@ svelte-wasm
 
     #[wasm_bindgen]
     pub fn greet() -> String {
-        "Hello, wasm-game-of-life!".into()
+        "Hello, bigTable!".into()
    }
    ```
 
@@ -75,7 +75,7 @@ svelte-wasm
    // The wasm-plugin runs `wasm-pack build` and cpoies the output into
    // `svelte-app/target` directory.
    // The `.wasm` file is located in the `svelte-app/public/build` dir.
-   import wasm from '../../wasm-game-of-life/Cargo.toml';
+   import wasm from '../../bigTable/Cargo.toml';
 
    // WebAssembly files must be loaded async.
    const init = async () => {
@@ -107,7 +107,7 @@ svelte-wasm
    [23:02:30] 200 ─ 1.51ms ─ /global.css
    [23:02:30] 200 ─ 2.81ms ─ /build/bundle.css
    [23:02:30] 200 ─ 3.40ms ─ /build/bundle.js
-   [23:02:31] 200 ─ 2.04ms ─ /build/wasm-game-of-life.wasm <-- The defined build path in your rollup.config.js file.
+   [23:02:31] 200 ─ 2.04ms ─ /build/bigTable.wasm <-- The defined build path in your rollup.config.js file.
    [23:02:31] 200 ─ 4.86ms ─ /build/bundle.css.map
    [23:02:31] 200 ─ 7.84ms ─ /build/bundle.js.map
    [23:02:31] 200 ─ 1.20ms ─ /favicon.png

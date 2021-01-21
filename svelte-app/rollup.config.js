@@ -61,7 +61,7 @@ export default [{
   },
   // {
   //   input: {
-  //     foo: "../wasm-game-of-life/Cargo.toml",
+  //     foo: "../bigTable/Cargo.toml",
   //   },
   //   plugins: [
   //     rust(),
