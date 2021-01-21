@@ -71,18 +71,19 @@ static mut tableRows: Vec<String> = Vec::new();
 static mut callback: Option<js_sys::Function> = None;
 // f: &js_sys::Function
 #[wasm_bindgen]
-pub fn setData(array: JsValue, f: js_sys::Function) {
+pub fn setData(array: JsValue ) {
     unsafe {
         tableData = array.into_serde().unwrap();
-        callback = Some(f);
+        // callback = Some(f); f: js_sys::Function
         // let this = JsValue::null();
         // let x = JsValue::from(5.);
         // callback.as_ref().unwrap().call1(&this, &x);
-        renderRowsArray(false,0.,0.);
+        // renderRowsArray(false,0.,0.);
+        renderRowsArray();
     }
 }
 
-pub fn renderRowsArray(callCallback: bool,start: f64,end:f64) {
+pub fn renderRowsArray() {
     unsafe{
         // if callCallback {
         //     console_log!("start {}",start);
@@ -95,19 +96,20 @@ pub fn renderRowsArray(callCallback: bool,start: f64,end:f64) {
                 let resString: String = format!("<div><span>{}</span></div>", cell);
                 rowString.push_str(&resString[..]);
             }
-            if callCallback  {
-                // console_log!("rendering data {}",tableData[0][0]);
-                let this = JsValue::null();
-                let y = JsValue::from(rowIdx.to_string());
-                // console_log!("rowIdx {}",rowIdx);
-                if rowIdx >= (start as usize)  && rowIdx <= (end as usize){ 
-                    let x = JsValue::from(rowString.to_string());
-                    callback.as_ref().unwrap().call2(&this, &y,&x);
-                }else{
-                    let x = JsValue::from(format!("<div class=\"row\" >loading... {}</div>",rowIdx).to_string());
-                    callback.as_ref().unwrap().call2(&this, &y,&x);
-                }
-            }
+            // callCallback: bool,start: f64,end:f64
+            // if callCallback  {
+            //     // console_log!("rendering data {}",tableData[0][0]);
+            //     let this = JsValue::null();
+            //     let y = JsValue::from(rowIdx.to_string());
+            //     // console_log!("rowIdx {}",rowIdx);
+            //     if rowIdx >= (start as usize)  && rowIdx <= (end as usize){ 
+            //         let x = JsValue::from(rowString.to_string());
+            //         callback.as_ref().unwrap().call2(&this, &y,&x);
+            //     }else{
+            //         let x = JsValue::from(format!("<div class=\"row\" >loading... {}</div>",rowIdx).to_string());
+            //         callback.as_ref().unwrap().call2(&this, &y,&x);
+            //     }
+            // }
             tableRows.push(rowString)
         }
     }
@@ -145,11 +147,11 @@ pub fn getRowsSlice(datajs: JsValue)-> JsValue {
 }
 
 
-#[wasm_bindgen]
-pub fn reRender(datajs: JsValue) {
-    let data: Vec<f64> = datajs.into_serde().unwrap();
-    // console_log!("startIdx {}",data[0]);
-    // console_log!("endIdx {}",data[1]);
-    renderRowsArray(true,data[0],data[1]);
-}
+// #[wasm_bindgen]
+// pub fn reRender(datajs: JsValue) {
+//     let data: Vec<f64> = datajs.into_serde().unwrap();
+//     // console_log!("startIdx {}",data[0]);
+//     // console_log!("endIdx {}",data[1]);
+//     renderRowsArray(true,data[0],data[1]);
+// }
 

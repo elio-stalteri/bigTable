@@ -4,9 +4,8 @@
   export let bigTable;
   bigTable.setData(
     Array.apply(null, {
-      length: Math.floor(Math.random() * 100 + 20000)
-    }).map((v, i) => Array.apply(null, { length: 20 }).map(() => i + "%")),
-    setData
+      length: Math.floor(Math.random() * 100 + 100000)
+    }).map((v, i) => Array.apply(null, { length: 20 }).map(() => i + "%"))
   );
   // console.log("getData", bigTable.getData());
   // console.log("getRows", bigTable.getRows());
@@ -35,7 +34,7 @@
       isUpdating = true;
       const TableScrollY = e.target.scrollTop;
       const cellOffset = Math.floor(TableScrollY / cellH);
-      console.log([cellOffset, cellOffset + numberVisible]);
+      // console.log([cellOffset, cellOffset + numberVisible]);
       paddingT = cellOffset * cellH;
       paddingB =
         (numberOfRows - numberVisible - cellOffset -1) * cellH;
