@@ -1,12 +1,8 @@
 <script>
   import { onMount } from "svelte";
-  import Row, { setData } from "./Row.svelte";
   export let bigTable;
-  bigTable.setData(
-    Array.apply(null, {
-      length: Math.floor(Math.random() * 100 + 100000)
-    }).map((v, i) => Array.apply(null, { length: 20 }).map(() => i + "%"))
-  );
+  export let buffer = 40;
+
   // console.log("getData", bigTable.getData());
   // console.log("getRows", bigTable.getRows());
   // let example = bigTable.send_example_to_js();
@@ -16,41 +12,53 @@
   const cellH = 29;
   const tableH = 388.5;
   const numberVisible = Math.ceil(tableH / cellH);
+  let data = false;
 
-  let rows = bigTable.getRowsSlice([0, numberVisible + 10]);
+  let rows = false;
+  let paddingB = 0;
+  let numberOfRows = 0;
+  let paddingT = 0;
 
-  onMount(() => {
+  onMount(async () => {
     console.log(numberVisible + 10);
     // bigTable.reRender([0,numberVisible+10]);
+    const res = await fetch("testData.json");
+    data = await res.json();
+    /*
+    Array.apply(null, {
+      length: Math.floor(Math.random() * 100 + 100000)
+    }).map((v, i) => Array.apply(null, { length: 20 }).map(() => i + "%"))
+    */
   });
-  let isUpdating = false;
+  $: if (data) {
+    const tStart = performance.now();
+    bigTable.setData(data);
+    console.log("time to load the data into rust", performance.now() - tStart);
+    rows = bigTable.getRowsSlice([0, numberVisible + 10]);
+    paddingB = (bigTable.getNumberRows() - numberVisible) * cellH;
+    numberOfRows = bigTable.getNumberRows();
+    console.log("numberOfRows", numberOfRows);
+  }
 
-  let paddingT = 0;
-  let paddingB = (bigTable.getNumberRows() - numberVisible) * cellH;
-  const buffer = 40;
-  const numberOfRows = bigTable.getNumberRows();
-  console.log("numberOfRows", numberOfRows);
+  let isUpdating = false;
   function tableScroll(e) {
     if (!isUpdating) {
       isUpdating = true;
       const TableScrollY = e.target.scrollTop;
       let cellOffset = Math.floor(TableScrollY / cellH);
-      if(cellOffset < buffer){
-        cellOffset = 0
-      }else{
-        cellOffset = cellOffset - buffer
+      if (cellOffset < buffer) {
+        cellOffset = 0;
+      } else {
+        cellOffset = cellOffset - buffer;
       }
-      let lastCellToRender = cellOffset + numberVisible + 2*buffer
-      if(lastCellToRender>=numberOfRows-1){
-        lastCellToRender=numberOfRows-1
+      let lastCellToRender = cellOffset + numberVisible + 2 * buffer;
+      if (lastCellToRender >= numberOfRows - 1) {
+        lastCellToRender = numberOfRows - 1;
       }
-      // console.log([cellOffset, cellOffset + numberVisible]);
+
       paddingT = cellOffset * cellH;
       paddingB = (numberOfRows - lastCellToRender - 1) * cellH;
-      rows = bigTable.getRowsSlice([
-        cellOffset,
-        lastCellToRender
-      ]);
+      rows = bigTable.getRowsSlice([cellOffset, lastCellToRender]);
       isUpdating = false;
     }
   }
