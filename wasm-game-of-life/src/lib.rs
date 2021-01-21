@@ -142,7 +142,7 @@ pub fn getRowsSlice(datajs: JsValue)-> JsValue {
         let data: Vec<f64> = datajs.into_serde().unwrap();
         let start = data[0] as usize;
         let end = data[1] as usize;
-        return JsValue::from_serde(&tableRows[start..=end]).unwrap()
+        return JsValue::from_serde(&tableRows[start..=end].join("")).unwrap()
     }
 }
 

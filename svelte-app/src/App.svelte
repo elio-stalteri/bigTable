@@ -28,7 +28,7 @@
   let paddingT = 0;
   let paddingB = (bigTable.getNumberRows() - numberVisible + 10) * cellH;
   const numberOfRows = bigTable.getNumberRows();
-  console.log("numberOfRows",numberOfRows)
+  console.log("numberOfRows", numberOfRows);
   function tableScroll(e) {
     if (!isUpdating) {
       isUpdating = true;
@@ -36,12 +36,11 @@
       const cellOffset = Math.floor(TableScrollY / cellH);
       // console.log([cellOffset, cellOffset + numberVisible]);
       paddingT = cellOffset * cellH;
-      paddingB =
-        (numberOfRows - numberVisible - cellOffset -1) * cellH;
+      paddingB = (numberOfRows - numberVisible - cellOffset - 1) * cellH;
       rows = bigTable.getRowsSlice([
         cellOffset,
         cellOffset + numberVisible < numberOfRows
-          ? cellOffset + numberVisible 
+          ? cellOffset + numberVisible
           : numberOfRows - 1
       ]);
       isUpdating = false;
@@ -87,8 +86,7 @@
   <div
     class="table"
     style="padding-top:{paddingT}px;padding-bottom:{paddingB}px;">
-    {#each rows as row, i}
-      {@html row}
-    {/each}
+
+    {@html rows}
   </div>
 </div>
