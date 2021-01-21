@@ -26,22 +26,30 @@
   let isUpdating = false;
 
   let paddingT = 0;
-  let paddingB = (bigTable.getNumberRows() - numberVisible + 10) * cellH;
+  let paddingB = (bigTable.getNumberRows() - numberVisible) * cellH;
+  const buffer = 40;
   const numberOfRows = bigTable.getNumberRows();
   console.log("numberOfRows", numberOfRows);
   function tableScroll(e) {
     if (!isUpdating) {
       isUpdating = true;
       const TableScrollY = e.target.scrollTop;
-      const cellOffset = Math.floor(TableScrollY / cellH);
+      let cellOffset = Math.floor(TableScrollY / cellH);
+      if(cellOffset < buffer){
+        cellOffset = 0
+      }else{
+        cellOffset = cellOffset - buffer
+      }
+      let lastCellToRender = cellOffset + numberVisible + 2*buffer
+      if(lastCellToRender>=numberOfRows-1){
+        lastCellToRender=numberOfRows-1
+      }
       // console.log([cellOffset, cellOffset + numberVisible]);
       paddingT = cellOffset * cellH;
-      paddingB = (numberOfRows - numberVisible - cellOffset - 1) * cellH;
+      paddingB = (numberOfRows - lastCellToRender - 1) * cellH;
       rows = bigTable.getRowsSlice([
         cellOffset,
-        cellOffset + numberVisible < numberOfRows
-          ? cellOffset + numberVisible
-          : numberOfRows - 1
+        lastCellToRender
       ]);
       isUpdating = false;
     }
@@ -55,17 +63,17 @@
     height: 50%;
     margin-top: 20%;
     overflow-y: scroll;
-    overflow-x: hidden;
+    overflow-x: scroll;
     padding: 5px;
     /* border:1px solid red; */
   }
   .table {
-    width: 100%;
+    width: fit-content;
     display: grid;
     grid-template-columns: repeat(20, minmax(80px, 1fr));
     /* gap: 10px; */
-    overflow-y: scroll;
-    overflow-x: scroll;
+    overflow-y: hidden;
+    overflow-x: hidden;
     /* border:1px solid teal */
     border: 1px solid rgba(0, 0, 0, 0.534);
   }
