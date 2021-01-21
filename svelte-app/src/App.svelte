@@ -86,7 +86,6 @@
   <div
     class="table"
     style="padding-top:{paddingT}px;padding-bottom:{paddingB}px;">
-
     {@html rows}
   </div>
 </div>
