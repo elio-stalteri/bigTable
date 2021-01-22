@@ -1,6 +1,6 @@
 <script>
   import { onMount } from "svelte";
-  export let bigTable;
+  import initBigTable from "./bigTable";
   export let buffer = 40;
 
   // console.log("getData", bigTable.getData());
@@ -18,19 +18,21 @@
   let paddingB = 0;
   let numberOfRows = 0;
   let paddingT = 0;
+  let bigTable;
 
   onMount(async () => {
     console.log(numberVisible + 10);
     // bigTable.reRender([0,numberVisible+10]);
     const res = await fetch("testData.json");
     data = await res.json();
-    /*
-    Array.apply(null, {
-      length: Math.floor(Math.random() * 100 + 100000)
-    }).map((v, i) => Array.apply(null, { length: 20 }).map(() => i + "%"))
-    */
+    // data = Array.apply(null, {
+    //   length: Math.floor(Math.random() * 100 + 100)
+    // }).map((v, i) => Array.apply(null, { length: 20 }).map(() => i + "%"));
+    bigTable = await initBigTable();
+    console.log(bigTable, data);
   });
-  $: if (data) {
+  $: if (data && bigTable) {
+    console.log("started");
     const tStart = performance.now();
     bigTable.setData(data);
     console.log("time to load the data into rust", performance.now() - tStart);
@@ -40,18 +42,31 @@
     console.log("numberOfRows", numberOfRows);
   }
 
+  let prevoius_scroll_pos;
+  function calculateBufferSize( scroll_pos) {
+    if (!prevoius_scroll_pos) {
+      prevoius_scroll_pos = scroll_pos;
+      return buffer;
+    }
+    const addToBuffer = Math.floor((Math.abs(scroll_pos - prevoius_scroll_pos) / cellH))
+    console.log("calculateBufferSize",addToBuffer);
+    prevoius_scroll_pos = scroll_pos;
+    return buffer + addToBuffer;
+  }
+
   let isUpdating = false;
   function tableScroll(e) {
     if (!isUpdating) {
       isUpdating = true;
       const TableScrollY = e.target.scrollTop;
+      const dynamicBuffer=calculateBufferSize(TableScrollY);
       let cellOffset = Math.floor(TableScrollY / cellH);
-      if (cellOffset < buffer) {
+      if (cellOffset < dynamicBuffer) {
         cellOffset = 0;
       } else {
-        cellOffset = cellOffset - buffer;
+        cellOffset = cellOffset - dynamicBuffer;
       }
-      let lastCellToRender = cellOffset + numberVisible + 2 * buffer;
+      let lastCellToRender = cellOffset + numberVisible + 2 * dynamicBuffer;
       if (lastCellToRender >= numberOfRows - 1) {
         lastCellToRender = numberOfRows - 1;
       }
