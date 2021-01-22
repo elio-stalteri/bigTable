@@ -2,6 +2,7 @@
   import { onMount } from "svelte";
   import initBigTable from "./bigTable";
   export let buffer = 40;
+  let maxBuffer = 70
 
   // console.log("getData", bigTable.getData());
   // console.log("getRows", bigTable.getRows());
@@ -51,7 +52,7 @@
     const addToBuffer = Math.floor((Math.abs(scroll_pos - prevoius_scroll_pos) / cellH))
     console.log("calculateBufferSize",addToBuffer);
     prevoius_scroll_pos = scroll_pos;
-    return buffer + addToBuffer;
+    return buffer + addToBuffer > maxBuffer ? maxBuffer : buffer + addToBuffer;
   }
 
   let isUpdating = false;
