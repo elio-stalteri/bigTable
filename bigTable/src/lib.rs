@@ -87,6 +87,18 @@ pub fn setData(array: &JsValue ) {
     }
 }
 
+#[wasm_bindgen]
+pub fn addData(array: &JsValue) {
+    unsafe {
+        console_log!("start parsing");
+        let mut tmpData: Vec<Vec<String>> = array.into_serde().unwrap();
+        tableData.append(&mut tmpData);
+        renderRowsArrayDelta(tmpData);
+        console_log!("end parsing");
+        
+    }
+}
+
 // #[wasm_bindgen]
 // pub fn setDataFromBiteArray(array: &mut [u8], colsize: u64) {
 //     unsafe {
@@ -101,6 +113,39 @@ pub fn setData(array: &JsValue ) {
 //         // renderRowsArray();
 //     }
 // }
+
+pub fn renderRowsArrayDelta(delta: Vec<Vec<String>>) {
+    unsafe{
+        // if callCallback {
+        //     console_log!("start {}",start);
+        //     console_log!("end {}",end);
+        // }
+        let mut tmpRows: Vec<String> = Vec::new();
+        for (rowIdx, row) in delta.iter().enumerate() {
+            let mut rowString: String = "".to_string();
+            for (cellIdx, cell) in row.iter().enumerate() {
+                let resString: String = format!("<div><span>{}</span></div>", cell);
+                rowString.push_str(&resString[..]);
+            }
+            // callCallback: bool,start: f64,end:f64
+            // if callCallback  {
+            //     // console_log!("rendering data {}",tableData[0][0]);
+            //     let this = JsValue::null();
+            //     let y = JsValue::from(rowIdx.to_string());
+            //     // console_log!("rowIdx {}",rowIdx);
+            //     if rowIdx >= (start as usize)  && rowIdx <= (end as usize){ 
+            //         let x = JsValue::from(rowString.to_string());
+            //         callback.as_ref().unwrap().call2(&this, &y,&x);
+            //     }else{
+            //         let x = JsValue::from(format!("<div class=\"row\" >loading... {}</div>",rowIdx).to_string());
+            //         callback.as_ref().unwrap().call2(&this, &y,&x);
+            //     }
+            // }
+            tmpRows.push(rowString);
+        }
+        tableRows.append(&mut tmpRows);
+    }
+}
 
 pub fn renderRowsArray() {
     unsafe{

@@ -2,17 +2,17 @@
   import { onMount } from "svelte";
   import initBigTable from "./bigTable";
   export let buffer = 40;
-  let maxBuffer = 70
+  let maxBuffer = 70;
 
-function unpack(str) {
+  function unpack(str) {
     var bytes = [];
-    for(var i = 0; i < str.length; i++) {
-        var char = str.charCodeAt(i);
-        bytes.push(char >>> 8);
-        bytes.push(char & 0xFF);
+    for (var i = 0; i < str.length; i++) {
+      var char = str.charCodeAt(i);
+      bytes.push(char >>> 8);
+      bytes.push(char & 0xff);
     }
     return bytes;
-}
+  }
   // console.log("getData", bigTable.getData());
   // console.log("getRows", bigTable.getRows());
   // let example = bigTable.send_example_to_js();
@@ -34,17 +34,33 @@ function unpack(str) {
     console.log(numberVisible + 10);
     // bigTable.reRender([0,numberVisible+10]);
     const res = await fetch("testData.json");
-    data = await res.json();
+    const tmpData = await res.json();
     // data = Array.apply(null, {
     //   length: Math.floor(Math.random() * 100 + 100)
     // }).map((v, i) => Array.apply(null, { length: 20 }).map(() => i + "%"));
     bigTable = await initBigTable();
+    let startSlice = 0;
+    const sliceLength = buffer*10;
+    bigTable.setData(tmpData.slice(startSlice, sliceLength));
+    const loadDataAsync = async (tmpData,startSlice,sliceLength,numberOfTimes) => {
+      startSlice +=sliceLength;
+      console.log("loadDataAsync", tmpData.slice(startSlice, startSlice+sliceLength>tmpData.length-1?undefined:startSlice+sliceLength).length)
+      bigTable.addData(tmpData.slice(startSlice, startSlice+sliceLength>tmpData.length-1?undefined:startSlice+sliceLength));
+      numberOfRows = bigTable.getNumberRows();
+      console.log("numberOfRows",numberOfRows,numberOfTimes % 4 ===0)
+      if(startSlice+sliceLength<tmpData.length-1){
+        setTimeout(()=>loadDataAsync(tmpData,startSlice,sliceLength,numberOfTimes+1),200)
+      }else{
+
+      }
+    };
+    loadDataAsync(tmpData,startSlice,sliceLength,1)
+    data = tmpData;
     console.log(bigTable, data);
   });
   $: if (data && bigTable) {
     console.log("started");
     const tStart = performance.now();
-    bigTable.setData(data);
     console.log("time to load the data into rust", performance.now() - tStart);
     rows = bigTable.getRowsSlice([0, numberVisible + 10]);
     paddingB = (bigTable.getNumberRows() - numberVisible) * cellH;
@@ -53,13 +69,15 @@ function unpack(str) {
   }
 
   let prevoius_scroll_pos;
-  function calculateBufferSize( scroll_pos) {
+  function calculateBufferSize(scroll_pos) {
     if (!prevoius_scroll_pos) {
       prevoius_scroll_pos = scroll_pos;
       return buffer;
     }
-    const addToBuffer = Math.floor((Math.abs(scroll_pos - prevoius_scroll_pos) / cellH))
-    console.log("calculateBufferSize",addToBuffer);
+    const addToBuffer = Math.floor(
+      Math.abs(scroll_pos - prevoius_scroll_pos) / cellH
+    );
+    console.log("calculateBufferSize", addToBuffer);
     prevoius_scroll_pos = scroll_pos;
     return buffer + addToBuffer > maxBuffer ? maxBuffer : buffer + addToBuffer;
   }
@@ -69,7 +87,7 @@ function unpack(str) {
     if (!isUpdating) {
       isUpdating = true;
       const TableScrollY = e.target.scrollTop;
-      const dynamicBuffer=calculateBufferSize(TableScrollY);
+      const dynamicBuffer = calculateBufferSize(TableScrollY);
       let cellOffset = Math.floor(TableScrollY / cellH);
       if (cellOffset < dynamicBuffer) {
         cellOffset = 0;
