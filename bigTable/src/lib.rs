@@ -70,10 +70,14 @@ static mut tableData: Vec<Vec<String>> = Vec::new();
 static mut tableRows: Vec<String> = Vec::new();
 static mut callback: Option<js_sys::Function> = None;
 // f: &js_sys::Function
+
 #[wasm_bindgen]
-pub fn setData(array: JsValue ) {
+pub fn setData(array: &JsValue ) {
     unsafe {
+        console_log!("start parsing");
         tableData = array.into_serde().unwrap();
+        console_log!("end parsing");
+        // tableData = Vec::from(array);
         // callback = Some(f); f: js_sys::Function
         // let this = JsValue::null();
         // let x = JsValue::from(5.);
@@ -82,6 +86,21 @@ pub fn setData(array: JsValue ) {
         renderRowsArray();
     }
 }
+
+// #[wasm_bindgen]
+// pub fn setDataFromBiteArray(array: &mut [u8], colsize: u64) {
+//     unsafe {
+//         // tableData = array.into_serde().unwrap();
+//         let tmp = Vec::from(array);
+//         // tableData = Vec::from(array);
+//         // callback = Some(f); f: js_sys::Function
+//         // let this = JsValue::null();
+//         // let x = JsValue::from(5.);
+//         // callback.as_ref().unwrap().call1(&this, &x);
+//         // renderRowsArray(false,0.,0.);
+//         // renderRowsArray();
+//     }
+// }
 
 pub fn renderRowsArray() {
     unsafe{

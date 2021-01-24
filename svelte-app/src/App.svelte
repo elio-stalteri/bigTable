@@ -4,6 +4,15 @@
   export let buffer = 40;
   let maxBuffer = 70
 
+function unpack(str) {
+    var bytes = [];
+    for(var i = 0; i < str.length; i++) {
+        var char = str.charCodeAt(i);
+        bytes.push(char >>> 8);
+        bytes.push(char & 0xFF);
+    }
+    return bytes;
+}
   // console.log("getData", bigTable.getData());
   // console.log("getRows", bigTable.getRows());
   // let example = bigTable.send_example_to_js();
