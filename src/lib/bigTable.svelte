@@ -1,18 +1,19 @@
 <!-- <svelte:options accessors={true} /> -->
 <script>
 	import { onMount } from 'svelte';
-	const data = new Array(2000000).fill(0).map((v, i) => 'test woow ' + (i + 1));
+	const data = new Array(15000000).fill(0).map((v, i) => 'test woow ' + (i + 1));
 
-	console.log('data', data.length);
+	// console.log('data', data.length);
 
 	function onScroll(e) {
-		innerHeight = refTable.scrollHeight;
-		scrollPercentage = refTable.scrollTop / refTable.scrollHeight;
+		const innerHeight = refTable.scrollHeight;
+		const dataLength = data.length + numberOfVisibleRows*neededHeight/innerHeight;
+		const scrollPercentage = refTable.scrollTop / refTable.scrollHeight;
 		currentIndex = Math.min(
-			Math.ceil(data.length * scrollPercentage),
+			Math.max(Math.ceil(dataLength * scrollPercentage), 0),
 			data.length - numberOfVisibleRows
 		);
-		currentIndexPos = (innerHeight * (currentIndex + 1)) / data.length;
+		currentIndexPos = (innerHeight * (currentIndex + 1)) / dataLength;
 		// console.table({ scrollPercentage, currentIndex });
 	}
 	let refRow;
@@ -20,24 +21,17 @@
 	let tableHeight;
 	let rowHeight;
 
-	$: numberOfVisibleRows =
-		tableHeight && rowHeight ? Math.ceil((tableHeight / rowHeight) * 1.2) : 0;
-	// $: console.log("numberOfVisibleRows",numberOfVisibleRows)
+	$: numberOfVisibleRows = tableHeight && rowHeight ? Math.ceil(tableHeight / rowHeight) : 0;
 
-	$: visibleData = new Array(numberOfVisibleRows).fill(0);
+
+	$: visibleData =
+		numberOfVisibleRows && numberOfVisibleRows > 0 ? new Array(numberOfVisibleRows).fill(0) : [];
 
 	let currentIndex = 0;
 
 	$: neededHeight = data && rowHeight ? data.length * rowHeight : 0;
 
-	let innerHeight = 0;
-	let scrollPercentage = 0;
 	let currentIndexPos = 0;
-
-	$: adjustCoefficent =
-		neededHeight && innerHeight && currentIndex ? neededHeight / innerHeight : 1;
-
-	$: console.log('padding bottom ', neededHeight, innerHeight, adjustCoefficent);
 
 	onMount(() => {
 		tableHeight = refTable.getBoundingClientRect().height;
