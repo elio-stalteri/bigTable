@@ -41,16 +41,6 @@
 	onMount(() => {
 		tableHeight = refTable.getBoundingClientRect().height;
 		rowHeight = refRow.getBoundingClientRect().height;
-		// setTimeout(() => {
-		// 	console.log('done');
-		// 	refTable.scrollTop = data.length * rowHeight + 20000;
-		// 	setTimeout(() => {
-		// 		const rows = document.getElementsByClassName('row');
-		// 		console.log(rows[rows.length - 1].getBoundingClientRect().top);
-		// 		console.log(refTable.getBoundingClientRect().top);
-		// 		console.log(innerHeight);
-		// 	}, 1000);
-		// }, 2000);
 	});
 </script>
 
