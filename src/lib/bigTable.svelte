@@ -1,19 +1,25 @@
 <!-- <svelte:options accessors={true} /> -->
 <script>
 	import { onMount } from 'svelte';
-	const data = new Array(15000000).fill(0).map((v, i) => 'test woow ' + (i + 1));
+	const data = new Array(20_000_000).fill(0).map((v, i) => 'test woow ' + (i + 1));
 
 	// console.log('data', data.length);
 
 	function onScroll(e) {
 		const innerHeight = refTable.scrollHeight;
-		const dataLength = data.length + numberOfVisibleRows*neededHeight/innerHeight;
+		console.table({
+			neededHeight,
+			innerHeight,
+			rowHeight,
+			result: Math.ceil((neededHeight - innerHeight) / rowHeight)
+		});
+		const dataLength = data.length + (data.length > 738_000 ? 0.0000189333 * data.length - 14 : 0);
 		const scrollPercentage = refTable.scrollTop / refTable.scrollHeight;
 		currentIndex = Math.min(
 			Math.max(Math.ceil(dataLength * scrollPercentage), 0),
 			data.length - numberOfVisibleRows
 		);
-		currentIndexPos = (innerHeight * (currentIndex + 1)) / dataLength;
+		currentIndexPos = (innerHeight * currentIndex) / dataLength;
 		// console.table({ scrollPercentage, currentIndex });
 	}
 	let refRow;
@@ -22,7 +28,6 @@
 	let rowHeight;
 
 	$: numberOfVisibleRows = tableHeight && rowHeight ? Math.ceil(tableHeight / rowHeight) : 0;
-
 
 	$: visibleData =
 		numberOfVisibleRows && numberOfVisibleRows > 0 ? new Array(numberOfVisibleRows).fill(0) : [];
@@ -36,6 +41,16 @@
 	onMount(() => {
 		tableHeight = refTable.getBoundingClientRect().height;
 		rowHeight = refRow.getBoundingClientRect().height;
+		// setTimeout(() => {
+		// 	console.log('done');
+		// 	refTable.scrollTop = data.length * rowHeight + 20000;
+		// 	setTimeout(() => {
+		// 		const rows = document.getElementsByClassName('row');
+		// 		console.log(rows[rows.length - 1].getBoundingClientRect().top);
+		// 		console.log(refTable.getBoundingClientRect().top);
+		// 		console.log(innerHeight);
+		// 	}, 1000);
+		// }, 2000);
 	});
 </script>
 
