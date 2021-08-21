@@ -1,11 +1,11 @@
 <!-- <svelte:options accessors={true} /> -->
 <script>
 	import { onMount } from 'svelte';
-	const data = new Array(900_000).fill(0).map((v, i) => 'test woow ' + (i + 1));
-
-	// console.log('data', data.length);
+	export let data = new Array(1_000_000).fill({ test: 'woow', test2: 'wooowawoow' });
+	export let headers = Object.keys(data[0]);
 
 	function onScroll(e) {
+		if (numberOfVisibleRows >= data.length) return;
 		const innerHeight = refTable.scrollHeight;
 		const scrollPercentage = refTable.scrollTop / refTable.scrollHeight;
 		const maxScrollPercentage = 1 - (numberOfVisibleRows * rowHeight) / refTable.scrollHeight;
@@ -13,7 +13,7 @@
 			Math.max(Math.ceil(data.length * maxScrollPercentage), 0),
 			data.length - numberOfVisibleRows
 		);
-		const lengthAdjust = data.length - (maxIndex + numberOfVisibleRows - 5);
+		const lengthAdjust = data.length - (maxIndex + numberOfVisibleRows - 1);
 		const dataLength = data.length + (neededHeight > refTable.scrollHeight ? lengthAdjust : 0);
 		currentIndex = Math.min(
 			Math.max(Math.ceil(dataLength * scrollPercentage), 0),
@@ -29,7 +29,9 @@
 	$: numberOfVisibleRows = tableHeight && rowHeight ? Math.ceil(tableHeight / rowHeight) : 0;
 
 	$: visibleData =
-		numberOfVisibleRows && numberOfVisibleRows > 0 ? new Array(numberOfVisibleRows).fill(0) : [];
+		numberOfVisibleRows && numberOfVisibleRows > 0
+			? new Array(Math.min(numberOfVisibleRows, data.length)).fill(0)
+			: [];
 
 	let currentIndex = 0;
 
@@ -43,32 +45,72 @@
 	});
 </script>
 
-<div class="table" on:scroll={onScroll} bind:this={refTable}>
-	<div style="position:relative;width:100%;min-height:{neededHeight}px;visibility:hidden">_</div>
-	<div class="row" style="visibility:hidden; top:-300%" bind:this={refRow}>0</div>
-	{#each visibleData as _, i}
-		<div class="row" style="top:{i * rowHeight + currentIndexPos}px">
-			{data[i + currentIndex]}
+<div class="container">
+	<div class="headers">
+		{#each headers as h}
+			<div class="header-col" style="width:{(1 / headers.length) * 100}%">{h}</div>
+		{/each}
+	</div>
+	<div class="table" on:scroll={onScroll} bind:this={refTable}>
+		<div style="position:relative;width:100%;min-height:{neededHeight}px;visibility:hidden">_</div>
+		<div class="row" style="visibility:hidden; top:-300%" bind:this={refRow}>
+			{#each headers as h}
+				<div class="col" style="width:{(1 / headers.length) * 100}%">{data[0][h]}</div>
+			{/each}
 		</div>
-		<!-- <div class="row" style="top:{(i + currentIndex) * rowHeight}px">{data[i + currentIndex]}</div> -->
-	{/each}
+		{#each visibleData as _, i}
+			<div class="row" style="top:{i * rowHeight + currentIndexPos}px">
+				{#each headers as h}
+					<div class="col" style="width:{(1 / headers.length) * 100}%">
+						{data[i + currentIndex][h]}
+					</div>
+				{/each}
+			</div>
+		{/each}
+	</div>
 </div>
 
 <style>
-	.table {
-		width: 500px;
-		max-height: 500px;
-		height: 500px;
+	.container {
+		width: 100%;
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+		flex-wrap: nowrap;
+		justify-content: space-evenly;
+		align-items: center;
 		position: relative;
-		overflow: scroll;
+		overflow-x: auto;
+		overflow-y: hidden;
+	}
+	.table {
+		width: 100%;
+		height: 100%;
+		position: relative;
+		overflow: auto;
 	}
 	.row {
 		width: 100%;
-		padding: 10px;
-		font-size: 16px;
-		line-height: 16px;
 		position: absolute;
 		top: 0;
+		display: flex;
+		flex-direction: row;
+		flex-wrap: nowrap;
+		justify-content: space-evenly;
+		align-items: center;
+	}
+	.headers {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: nowrap;
+		justify-content: space-evenly;
+		align-items: center;
+		width: 100%;
+	}
+	.header-col,
+	.col {
 		border: 1px solid black;
+		position: relative;
+		padding: 10px;
 	}
 </style>
