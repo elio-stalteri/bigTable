@@ -1,26 +1,25 @@
 <!-- <svelte:options accessors={true} /> -->
 <script>
 	import { onMount } from 'svelte';
-	const data = new Array(20_000_000).fill(0).map((v, i) => 'test woow ' + (i + 1));
+	const data = new Array(900_000).fill(0).map((v, i) => 'test woow ' + (i + 1));
 
 	// console.log('data', data.length);
 
 	function onScroll(e) {
 		const innerHeight = refTable.scrollHeight;
-		console.table({
-			neededHeight,
-			innerHeight,
-			rowHeight,
-			result: Math.ceil((neededHeight - innerHeight) / rowHeight)
-		});
-		const dataLength = data.length + (data.length > 738_000 ? 0.0000189333 * data.length - 14 : 0);
 		const scrollPercentage = refTable.scrollTop / refTable.scrollHeight;
+		const maxScrollPercentage = 1 - (numberOfVisibleRows * rowHeight) / refTable.scrollHeight;
+		const maxIndex = Math.min(
+			Math.max(Math.ceil(data.length * maxScrollPercentage), 0),
+			data.length - numberOfVisibleRows
+		);
+		const lengthAdjust = data.length - (maxIndex + numberOfVisibleRows - 5);
+		const dataLength = data.length + (neededHeight > refTable.scrollHeight ? lengthAdjust : 0);
 		currentIndex = Math.min(
 			Math.max(Math.ceil(dataLength * scrollPercentage), 0),
 			data.length - numberOfVisibleRows
 		);
 		currentIndexPos = (innerHeight * currentIndex) / dataLength;
-		// console.table({ scrollPercentage, currentIndex });
 	}
 	let refRow;
 	let refTable;
