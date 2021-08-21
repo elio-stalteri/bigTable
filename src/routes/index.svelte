@@ -1,10 +1,13 @@
 <script>
 	import BigTable from '$lib/bigTable.svelte';
+	import BigTableDesign from '$lib/bigTableDesign.svelte';
 </script>
 
 <div class="containerTable">
     <BigTable />
 </div>
+
+<!-- <BigTableDesign></BigTableDesign> -->
 
 
 <style>

@@ -45,7 +45,7 @@
 	});
 </script>
 
-<!-- <div class="container">
+<div class="container">
 	<div class="headers">
 		{#each headers as h}
 			<div class="header-col" style="width:{(1 / headers.length) * 100}%">{h}</div>
@@ -68,109 +68,49 @@
 			</div>
 		{/each}
 	</div>
-</div> -->
-
-<section>
-	<!--for demo wrap-->
-	<h1>Fixed Table header</h1>
-	<div class="tbl-content" bind:this={refTable} on:scroll={onScroll} style="position:relative">
-		<div class="tbl-header">
-			<table cellpadding="0" cellspacing="0" border="0">
-				<thead>
-					<tr>
-						{#each headers as h}
-							<th>{h}</th>
-						{/each}
-					</tr>
-				</thead>
-			</table>
-		</div>
-		<div style="position:relative;width:100%;min-height:{neededHeight}px;visibility:hidden">_</div>
-		<table cellpadding="0" cellspacing="0" border="0" style="position:absolute;top:0;left:0">
-			<tbody style="position:absolute;width:100%;">
-				<tr
-					style="position:absolute;top:-300px;width:100%;"
-					bind:this={refRow}
-				>
-					{#each headers as h}
-						<td>{data[0][h]}</td>
-					{/each}
-				</tr>
-				{#each visibleData as _, i}
-						<tr style="position:absolute;width:100%;top:{i * rowHeight + currentIndexPos}px">
-							{#each headers as h}
-								<td style="position:relative">{data[i + currentIndex][h]}</td>
-							{/each}
-						</tr>
-				{/each}
-			</tbody>
-		</table>
-	</div>
-</section>
+</div>
 
 <style>
-	h1 {
-		font-size: 30px;
-		color: #fff;
-		text-transform: uppercase;
-		font-weight: 300;
-		text-align: center;
-		margin-bottom: 15px;
-	}
-	table {
+	.container {
 		width: 100%;
-		table-layout: fixed;
-	}
-	.tbl-header {
-		background-color: rgba(255, 255, 255, 0.3);
-		position:sticky;
-		top:0;
-		z-index: 99;
-	}
-	.tbl-content {
-		height: 300px;
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+		flex-wrap: nowrap;
+		justify-content: space-evenly;
+		align-items: center;
+		position: relative;
 		overflow-x: auto;
-		margin-top: 0px;
-		border: 1px solid rgba(255, 255, 255, 0.3);
-		z-index: 0;
+		overflow-y: hidden;
 	}
-	th {
-		padding: 20px 15px;
-		text-align: left;
-		font-weight: 500;
-		font-size: 12px;
-		color: #fff;
-		text-transform: uppercase;
+	.table {
+		width: 100%;
+		height: 100%;
+		position: relative;
+		overflow: auto;
 	}
-	td {
-		padding: 15px;
-		text-align: left;
-		vertical-align: middle;
-		font-weight: 300;
-		font-size: 12px;
-		color: #fff;
-		border-bottom: solid 1px rgba(255, 255, 255, 0.1);
+	.row {
+		width: 100%;
+		position: absolute;
+		top: 0;
+		display: flex;
+		flex-direction: row;
+		flex-wrap: nowrap;
+		justify-content: space-evenly;
+		align-items: center;
 	}
-
-	/* demo styles */
-
-	/* @import url(https://fonts.googleapis.com/css?family=Roboto:400,500,300,700); */
-	:global(body) {
-		background: -webkit-linear-gradient(left, #25c481, #25b7c4);
-		background: linear-gradient(to right, #25c481, #25b7c4);
-		font-family: 'Roboto', sans-serif;
+	.headers {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: nowrap;
+		justify-content: space-evenly;
+		align-items: center;
+		width: 100%;
 	}
-	section {
-		margin: 50px;
-	}
-
-	::-webkit-scrollbar {
-		width: 6px;
-	}
-	::-webkit-scrollbar-track {
-		-webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-	}
-	::-webkit-scrollbar-thumb {
-		-webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+	.header-col,
+	.col {
+		border: 1px solid black;
+		position: relative;
+		padding: 10px;
 	}
 </style>
