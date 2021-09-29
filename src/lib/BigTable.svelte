@@ -1,0 +1,205 @@
+<script>
+	const cols = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+	const rows = [
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0
+	];
+
+	let scrollLeft = 0;
+</script>
+
+<!-- table container -->
+<div
+	class="
+        relative 
+        flex 
+        w-full 
+        h-full 
+        overflow-x-hidden 
+        overflow-y-hidden 
+        items-start 
+        flex-nowrap 
+        flex-col 
+        bg-gray-100 
+        border
+        rounded
+        border-gray-300
+        
+        scrollbar-thumb-gray-400 
+        scrollbar-track-gray-200"
+>
+	<!-- header -->
+	<div
+		style="transform:translateX(-{scrollLeft}px)" class=" z-0 relative flex flex-row items-center flex-nowrap min-w-full divide-x divide-solid divide-gray-300 border-b border-gray-300 bg-gray-200"
+	>
+		{#each cols as _}
+			<!-- header cell -->
+			<div class="p-2 px-20">test</div>
+		{/each}
+	</div>
+	<div
+		on:scroll={(e) => {scrollLeft = e.target.scrollLeft
+        console.log(scrollLeft)}}
+		class="
+            z-10
+            relative
+            flex-grow 
+            w-full 
+            overflow-y-scroll
+            
+            scrollbar-thumb-gray-400 
+            scrollbar-track-gray-200"
+	>
+		{#each rows as _}
+			<div
+				class=" flex flex-row items-center flex-nowrap divide-x divide-solid divide-gray-300 "
+			>
+				{#each cols as _}
+					<!-- header cell -->
+					<div class="p-2 px-20 border-b border-gray-300">test</div>
+				{/each}
+			</div>
+		{/each}
+	</div>
+</div>

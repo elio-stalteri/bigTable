@@ -1,8 +1,11 @@
 <!-- <svelte:options accessors={true} /> -->
 <script>
+	import Lazy from "lazy.js"
 	import { onMount } from 'svelte';
-	export let data = new Array(1_000_000).fill({ test: 'woow', test2: 'wooowawoow' });
+	export let data = new Array(1_000_000).fill({ test: 'wooow ',test2:"wooowowo" });
 	export let headers = Object.keys(data[0]);
+
+	console.log(Lazy)
 
 	function onScroll(e) {
 		if (numberOfVisibleRows >= data.length) return;
@@ -45,24 +48,33 @@
 	});
 </script>
 
-<div class="container">
+<div class="containerTable">
 	<div class="headers">
 		{#each headers as h}
 			<div class="header-col" style="width:{(1 / headers.length) * 100}%">{h}</div>
 		{/each}
 	</div>
-	<div class="table" on:scroll={onScroll} bind:this={refTable}>
+	<div class="bigTable" on:scroll={onScroll} bind:this={refTable}>
 		<div style="position:relative;width:100%;min-height:{neededHeight}px;visibility:hidden">_</div>
 		<div class="row" style="visibility:hidden; top:-300%" bind:this={refRow}>
 			{#each headers as h}
 				<div class="col" style="width:{(1 / headers.length) * 100}%">{data[0][h]}</div>
 			{/each}
 		</div>
+		{#if currentIndex - 1 > -1}
+			<div class="row" style="top:{currentIndexPos - rowHeight}px">
+				{#each headers as h}
+					<div class="col" style="width:{(1 / headers.length) * 100}%">
+						{currentIndex} - {data[currentIndex - 1][h]}
+					</div>
+				{/each}
+			</div>
+		{/if}
 		{#each visibleData as _, i}
 			<div class="row" style="top:{i * rowHeight + currentIndexPos}px">
 				{#each headers as h}
 					<div class="col" style="width:{(1 / headers.length) * 100}%">
-						{data[i + currentIndex][h]}
+						{currentIndex + i + 1} - {data[i + currentIndex][h]}
 					</div>
 				{/each}
 			</div>
@@ -71,7 +83,7 @@
 </div>
 
 <style>
-	.container {
+	.containerTable {
 		width: 100%;
 		height: 100%;
 		display: flex;
@@ -82,8 +94,9 @@
 		position: relative;
 		overflow-x: auto;
 		overflow-y: hidden;
+		background: white;
 	}
-	.table {
+	.bigTable {
 		width: 100%;
 		height: 100%;
 		position: relative;
@@ -112,5 +125,16 @@
 		border: 1px solid black;
 		position: relative;
 		padding: 10px;
+	}
+
+
+	::-webkit-scrollbar {
+		width: 6px;
+	}
+	::-webkit-scrollbar-track {
+		-webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+	}
+	::-webkit-scrollbar-thumb {
+		-webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
 	}
 </style>
