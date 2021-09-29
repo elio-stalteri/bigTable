@@ -16,7 +16,7 @@
 		test11: 'wooowowo',
 		test12: 'wooowowo',
 		test13: 'wooowowo'
-	}).map((v,i)=>({...v,test:v.test+i}));
+	})//.map((v,i)=>({...v,test:v.test+i}));
 	export let headers = Object.keys(data[0]).map(h=>({name:h,key:h,width:200}));
 
 	let scrollLeft = 0;
