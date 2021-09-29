@@ -5,7 +5,7 @@
 </script>
 
 <div
-	class="py-2 grid place-items-center border border-gray-300 flex-shrink-0"
+	class="py-2 grid place-items-center  flex-shrink-0"
 	style="min-width:{100 / headersLength}%;width:{header.width || 200}px"
 >
 	{content}
