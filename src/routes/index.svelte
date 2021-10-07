@@ -1,10 +1,38 @@
 <script>
 	import BigTable from '$lib/BigTable.svelte';
+import { onMount } from 'svelte';
 	// import BigTableDesign from '$lib/bigTableDesign.svelte';
+	let data = []
+	onMount(() => {
+		const faker = window.Faker;
+		console.log(faker)
+		const array = [];
+		
+		const tt0 = performance.now();
+		for (let i = 0; i < 3_000_000; ++i) {
+			if(i%1000===0)console.log(i)
+			array[i] = {
+				firstName: faker.Name.firstName(),
+				lastName: faker.Name.lastName(),
+				email: faker.Internet.email(),
+				sentence: faker.Lorem.sentence(),
+				phoneNumbe: faker.PhoneNumber.phoneNumber()
+			};
+		}
+		const tt1 = performance.now();
+		data = array
+
+
+		// const dataframe = new df.DataFrame(data)
+		// data = data.filter((a) => a.test > 10000);
+
+		console.log(tt1 - tt0);
+	});
 </script>
 
+
 <div class="absolute inset-8 ">
-    <BigTable />
+    <BigTable {data} />
 </div>
 
 <!-- <BigTableDesign></BigTableDesign> -->

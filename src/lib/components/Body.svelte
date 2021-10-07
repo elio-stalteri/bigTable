@@ -40,10 +40,19 @@
 
 	let currentIndexPos = 0;
 
+	let started = false;
 	onMount(() => {
+		started = true;
+
 		tableHeight = refTable.getBoundingClientRect().height;
-		rowHeight = refRow.getBoundingClientRect().height;
+		if (data.length > 0 && refRow) {
+			rowHeight = refRow.getBoundingClientRect().height;
+		}
 	});
+
+	$: if (started && data.length > 0 && refRow) {
+		rowHeight = refRow.getBoundingClientRect().height;
+	}
 </script>
 
 <div
@@ -63,7 +72,9 @@
 	on:scroll={onScroll}
 >
 	<div style="position:relative;width:100%;min-height:{neededHeight}px;visibility:hidden">_</div>
-	<BodyRow row={data[0]} {headers} hidden bind:refRow />
+	{#if data.length>0}
+		 <BodyRow row={data[0]} {headers} hidden bind:refRow />
+	{/if}
 	{#if currentIndex - 1 > -1}
 		<BodyRow row={data[currentIndex - 1]} {headers} topPx={currentIndexPos - rowHeight} />
 	{/if}

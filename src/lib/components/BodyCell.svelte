@@ -5,7 +5,7 @@
 </script>
 
 <div
-	class="py-2 grid place-items-center  flex-shrink-0"
+	class="p-2   flex-shrink-0 whitespace-nowrap overflow-ellipsis overflow-hidden"
 	style="min-width:{100 / headersLength}%;width:{header.width || 200}px"
 >
 	{content}
