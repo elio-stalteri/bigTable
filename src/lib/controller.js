@@ -4,7 +4,6 @@ import { writable } from "svelte/store";
 import lazy from "lazy.js"
 
 function filterLargeArray(array, filterFn, onProgress, onDone) {
-
     const tmpResult = [];
     const arrayLength = array.length
     let chunk = 1000;
@@ -42,6 +41,7 @@ bigTableData.subscribe((value) => {
     visibleData.set(value)
     if (value.length > 0) {
         bigTableHeaderConfig.update(prev => prev && prev.length > 0 ? prev : Object.keys(value[0]).map((h) => ({ name: h, key: h, width: 400 })))
+        filterSearchSortConfig.set({ filter: {}, search: {}, sort: [] })
     }
 })
 
@@ -81,6 +81,11 @@ if (TEST_PERF_AND_LOG) {
         console.groupCollapsed("bigTableHeaderConfig")
         console.log(v)
         console.groupEnd("bigTableHeaderConfig")
+    })
+    filterSearchSortConfig.subscribe(v => {
+        console.groupCollapsed("filterSearchSortConfig")
+        console.log(v)
+        console.groupEnd("filterSearchSortConfig")
     })
 }
 

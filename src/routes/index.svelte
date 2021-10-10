@@ -2,8 +2,8 @@
 	import BigTable from '$lib/index';
 	import { onMount } from 'svelte';
 
-	const AMMOUNT = 100_000;
-	const REFRESH_EVERY = 1;
+	const AMMOUNT = 1_000_000;
+	const REFRESH_EVERY = 10;
 
 	onMount(() => {
 		const faker = window.Faker;
@@ -22,7 +22,7 @@
 					phoneNumbe: faker.PhoneNumber.phoneNumber()
 				};
 			}
-			array[i] = tmpValue;
+			array[i] = {...tmpValue};
 		}
 		BigTable.controller.initTable(array);
 		BigTable.controller.sort('firstName');
