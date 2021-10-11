@@ -38,6 +38,9 @@ export const visibleData = writable([]);
 export const bigTableHeaderConfig = writable([]);
 export const filterSearchSortConfig = writable({ filter: {}, search: {}, sort: [] });
 export const loadingOverlay = writable({ enabled: false, text: '' });
+export const refreshTableHeight = writable(false)
+export const refreshTableHeightTrigger = ()=>refreshTableHeight.update(v=>!v)
+
 function setLoadingOverlay(text) {
     loadingOverlay.update(() => ({ enabled: true, text: text || '' }));
 }
