@@ -2,8 +2,8 @@
 	import BigTable from '$lib/index';
 	import { onMount } from 'svelte';
 
-	const AMMOUNT = 1_000_000;
-	const REFRESH_EVERY = 10;
+	const AMMOUNT = 10_000_000;
+	const REFRESH_EVERY = 100;
 
 	onMount(() => {
 		const faker = window.Faker;
@@ -25,19 +25,19 @@
 			array[i] = {...tmpValue};
 		}
 		BigTable.controller.initTable(array);
-		BigTable.controller.sort('firstName');
-		setTimeout(() => {
-			BigTable.controller.sort('lastName');
-		}, 5000);
-		setTimeout(() => {
-			BigTable.controller.sort('firstName');
-		}, 10000);
-		setTimeout(() => {
-			BigTable.controller.sort('firstName');
-		}, 15000);
-		setTimeout(() => {
-			BigTable.controller.sort('firstName');
-		}, 20000);
+		// BigTable.controller.sort('firstName');
+		// setTimeout(() => {
+		// 	BigTable.controller.sort('lastName');
+		// }, 5000);
+		// setTimeout(() => {
+		// 	BigTable.controller.sort('firstName');
+		// }, 10000);
+		// setTimeout(() => {
+		// 	BigTable.controller.sort('firstName');
+		// }, 15000);
+		// setTimeout(() => {
+		// 	BigTable.controller.sort('firstName');
+		// }, 20000);
 		// setTimeout(
 		// 	()=>{
 
