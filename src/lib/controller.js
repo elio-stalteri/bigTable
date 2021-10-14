@@ -115,7 +115,7 @@ const searchIntoTheTree = (tmpTree, word, failed = 0) => {
 					return getTreeTails(tmp);
 				}
 			}
-		} else if (!failed < 5) {
+		} else if (failed < 5) {
 			let res = [];
 			// console.log('fixed word', ch, wordArr.slice(i + 1).join(''));
 			for (var key in tmp) {
@@ -128,25 +128,44 @@ const searchIntoTheTree = (tmpTree, word, failed = 0) => {
 };
 
 bigTableData.subscribe((value) => {
+
+    // !!IMPORTANT!! forse puo essere una buona idea fare un albero parziale e metter i valori completi dentro, qualcosa tipo questo
+    /*
+    {
+        a:{
+            b:{
+                c:{
+                    __indexes__:[
+                        ["abcdefg",1000]
+                        ...
+                    ]
+                }
+                ...
+            }
+            ...
+        }
+        ...
+    }
+    */
 	console.time('tree');
 	value.forEach((v, i) =>
 		Object.keys(v).map((k) => {
-			tree[k] = addToTree(tree[k], v[k], i);
+			if(k!=="sentence")tree[k] = addToTree(tree[k], v[k], i);
 		}),
 	);
 	console.timeEnd('tree');
 	console.log(tree);
 	// Aaliyah
-	if ('sentence' in tree) {
-		console.time('searchtree');
+	// if ('sentence' in tree) {
+	// 	console.time('searchtree');
 
-		const res = searchIntoTheTree(tree['sentence'], 'alituid cotsettetur dicta mon');
-		console.log(
-			'search res',
-			res.map((i) => value[i]),
-		);
-		console.timeEnd('searchtree');
-	}
+	// 	const res = searchIntoTheTree(tree['sentence'], 'alituid cotsettetur dicta mon');
+	// 	console.log(
+	// 		'search res',
+	// 		res.map((i) => value[i]),
+	// 	);
+	// 	console.timeEnd('searchtree');
+	// }
 
 	// visibleData.set(value);
 	if (value.length > 0) {
@@ -235,52 +254,53 @@ export const search = (value) => {
 			})();
 		}, 1);
 	} else
-		visibleData.update((prev) => {
-			const res = prev.filter((a, i) => {
-				// console.log('filter', i);
-				// searchProgress.update(() => (((i + 1) / prev.length) * 100).toFixed(10));
-				return fuzzy(value, a.firstName) > 0.85;
+		bigTableData.subscribe((data) => {
+			visibleData.update(() => {
+				console.time('searchtree');
+
+				const res = searchIntoTheTree(tree['firstName'], value);
+				console.timeEnd('searchtree');
+                console.log(res.map((i) => data[i]))
+				return res.map((i) => data[i]);
 			});
-			console.timeEnd('search');
-			return res;
-		});
-	visibleData.subscribe((prev) => {
-		// asyncFilter(
-		// 	prev,
-		// 	async (a, i) => {
-		// 		console.log('filter', i);
-		// 		return searchKeys.some((key) => fuzzy(value, a[key]) > 0.85);
-		// 	},
-		// 	(res) => {
-		// 				console.timeEnd('search');
-		// 		visibleData.update(() => res);
-		// 	},
-		// );
-		// stopSearch = filterLargeArray(
-		// 	prev,
-		// 	// (a) => searchKeys.some((key) => fuzzy(value, a[key]) > 0.85),
-		// 	(a) => searchKeys.some((key) => a[key].indexOf(value) > -1),
-		// 	(progress, newV) => {
-		// 		console.log(progress);
-		// 		searchProgress.update(() => (progress * 100).toFixed(10));
-		// 		// if(prev.length!==newV.length) visibleData.update(() => newV);
-		// 		// if (newV.length > 10) {
-		// 		// 	searchProgress.update(() => 0);
-		// 		// 	visibleData.update(() => newV);
-		// 		// 	if (TEST_PERF_AND_LOG) {
-		// 		// 		console.timeEnd('search');
-		// 		// 	}
-		// 		// 	return 'STOP';
-		// 		// }
-		// 	},
-		// 	(newV) => {
-		// 		visibleData.update(() => newV);
-		// 		if (TEST_PERF_AND_LOG) {
-		// 			console.timeEnd('search');
-		// 		}
-		// 	},
-		// );
-	})();
+		})();
+	// visibleData.subscribe((prev) => {
+	// 	// asyncFilter(
+	// 	// 	prev,
+	// 	// 	async (a, i) => {
+	// 	// 		console.log('filter', i);
+	// 	// 		return searchKeys.some((key) => fuzzy(value, a[key]) > 0.85);
+	// 	// 	},
+	// 	// 	(res) => {
+	// 	// 				console.timeEnd('search');
+	// 	// 		visibleData.update(() => res);
+	// 	// 	},
+	// 	// );
+	// 	// stopSearch = filterLargeArray(
+	// 	// 	prev,
+	// 	// 	// (a) => searchKeys.some((key) => fuzzy(value, a[key]) > 0.85),
+	// 	// 	(a) => searchKeys.some((key) => a[key].indexOf(value) > -1),
+	// 	// 	(progress, newV) => {
+	// 	// 		console.log(progress);
+	// 	// 		searchProgress.update(() => (progress * 100).toFixed(10));
+	// 	// 		// if(prev.length!==newV.length) visibleData.update(() => newV);
+	// 	// 		// if (newV.length > 10) {
+	// 	// 		// 	searchProgress.update(() => 0);
+	// 	// 		// 	visibleData.update(() => newV);
+	// 	// 		// 	if (TEST_PERF_AND_LOG) {
+	// 	// 		// 		console.timeEnd('search');
+	// 	// 		// 	}
+	// 	// 		// 	return 'STOP';
+	// 	// 		// }
+	// 	// 	},
+	// 	// 	(newV) => {
+	// 	// 		visibleData.update(() => newV);
+	// 	// 		if (TEST_PERF_AND_LOG) {
+	// 	// 			console.timeEnd('search');
+	// 	// 		}
+	// 	// 	},
+	// 	// );
+	// })();
 };
 
 export const sort = (key) => {

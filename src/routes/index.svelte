@@ -2,8 +2,8 @@
 	import BigTable from '$lib/index';
 	import { onMount } from 'svelte';
 
-	const AMMOUNT = 5_000_000;
-	const REFRESH_EVERY = 100;
+	const AMMOUNT = 500_000;
+	const REFRESH_EVERY = 1;
 
 	onMount(() => {
 		const faker = window.Faker;

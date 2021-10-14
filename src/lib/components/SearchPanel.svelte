@@ -39,6 +39,7 @@
 	let value = null;
 
 	let searchValue = '';
+    $: search(searchValue)
 </script>
 
 <style lang="postcss">
