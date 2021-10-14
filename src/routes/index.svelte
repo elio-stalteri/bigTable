@@ -2,7 +2,7 @@
 	import BigTable from '$lib/index';
 	import { onMount } from 'svelte';
 
-	const AMMOUNT = 10_000_000;
+	const AMMOUNT = 5_000_000;
 	const REFRESH_EVERY = 100;
 
 	onMount(() => {
@@ -19,11 +19,14 @@
 					lastName: faker.Name.lastName(),
 					email: faker.Internet.email(),
 					sentence: faker.Lorem.sentence(),
-					phoneNumbe: faker.PhoneNumber.phoneNumber()
+					phoneNumbe: faker.PhoneNumber.phoneNumber(),
 				};
 			}
-			array[i] = {...tmpValue};
+			array[i] = { ...tmpValue };
 		}
+		array.push({ ...tmpValue,sentence:"aliquid consectetur dicta non" });
+		
+		console.log("start conversion")
 		BigTable.controller.initTable(array);
 		// BigTable.controller.sort('firstName');
 		// setTimeout(() => {
@@ -56,7 +59,6 @@
 
 		// const dataframe = new df.DataFrame(data)
 		// data = data.filter((a) => a.test > 10000);
-
 	});
 </script>
 
