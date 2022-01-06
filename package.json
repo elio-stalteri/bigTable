@@ -2,7 +2,7 @@
 	"name": "big-table",
 	"version": "0.0.1",
 	"scripts": {
-		"dev": "svelte-kit dev",
+		"dev": "svelte-kit dev -p 3003",
 		"build": "svelte-kit build",
 		"preview": "svelte-kit preview",
 		"lint": "prettier --ignore-path .gitignore  --check --plugin-search-dir=. . && eslint --ignore-path .gitignore .",
@@ -26,6 +26,10 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"lazy.js": "^0.5.1"
+		"faker": "^5.5.3",
+		"fast-fuzzy": "^1.10.10",
+		"fast-sort": "^3.0.3",
+		"lazy.js": "^0.5.1",
+		"svelecte": "^2.1.0"
 	}
 }
